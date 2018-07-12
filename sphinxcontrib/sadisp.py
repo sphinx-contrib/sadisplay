@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-import sys
 import os
+import sys
+import logging
 import subprocess
 
 try:
@@ -8,12 +9,16 @@ try:
 except ImportError:  # Python<2.5
     from sha import sha as sha1  # pyflakes:ignore
 
-from sphinx.errors import SphinxWarning, SphinxError, ExtensionError
-from sphinx.util.compat import Directive
+from docutils.parsers.rst import Directive
 from docutils.parsers.rst import directives
 from docutils import nodes
-import sadisplay
+
+from sphinx.errors import SphinxWarning, SphinxError, ExtensionError
 from sphinx.util.osutil import ensuredir, ENOENT
+
+import sadisplay
+
+log = logging.getLogger(__name__)
 
 
 class RendererError(SphinxError):
@@ -70,8 +75,8 @@ def generate_name(self, content):
     fname = 'sadisplay-%s.png' % key
     imgpath = getattr(self.builder, 'imgpath', None)
     if imgpath:
-        return ('/'.join((self.builder.imgpath, fname)),
-                os.path.join(self.builder.outdir, '_images', fname))
+        return ('/'.join((self.builder.imgpath, fname)), os.path.join(
+            self.builder.outdir, '_images', fname))
     else:
         return fname, os.path.join(self.builder.outdir, fname)
 
@@ -101,8 +106,11 @@ def render_image(self, content, command):
     f = open(outfname, 'wb')
     try:
         try:
-            p = subprocess.Popen(command, stdout=f,
-                                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen(
+                command,
+                stdout=f,
+                stdin=subprocess.PIPE,
+                stderr=subprocess.PIPE)
         except OSError as err:
             if err.errno != ENOENT:
                 raise
@@ -129,7 +137,7 @@ def render(self, node):
 
                 # !!!
                 # Ugly hack
-                repr(m) # without this statement - exception raises
+                repr(m)  # without this statement - exception raises
                 # any ideas?
 
                 all_names.append(m)
@@ -175,6 +183,7 @@ def html_visit(self, node):
     try:
         refname = render(self, node)
     except Exception as err:
+        log.exception(err)
         self.builder.warn('sadisplay render error: %s' % err)
         raise nodes.SkipNode
     self.body.append(self.starttag(node, 'p', CLASS='sadisplay'))
@@ -185,7 +194,7 @@ def html_visit(self, node):
         template = '<img src="%s" alt="%s" />\n'
 
     self.body.append(template % (self.encode(refname),
-                        self.encode(node['alt'] or node['module'])))
+                                 self.encode(node['alt'] or node['module'])))
 
     self.body.append('</p>\n')
     raise nodes.SkipNode
@@ -204,18 +213,20 @@ def latex_visit(self, node):
 def setup(app):
 
     try:
-        app.add_config_value('plantuml', False, False)
+        app.add_config_value('plantuml', [], False)
     except ExtensionError:
         pass
 
     try:
-        app.add_config_value('graphviz', False, False)
+        app.add_config_value('graphviz', [], False)
     except ExtensionError:
         pass
 
     app.add_config_value('sadisplay_default_render', 'graphviz', False)
 
-    app.add_node(SaNode,
-                 html=(html_visit, None),
-                 latex=(latex_visit, None))
+    if not getattr(setup, '_sanode_registered', False):
+        app.add_node(
+            SaNode, html=(html_visit, None), latex=(latex_visit, None))
+        setattr(setup, '_sanode_registered', True)
+
     app.add_directive('sadisplay', SadisplayDirective)

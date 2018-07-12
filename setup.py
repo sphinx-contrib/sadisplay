@@ -8,17 +8,15 @@ except ImportError:
 
 here = os.path.dirname(os.path.abspath(__file__))
 
-
 requires = [
     'Sphinx>=0.6',
-    'sadisplay>=0.3',
+    'sadisplay',
 ]
-
 
 setup(
     name='sphinxcontrib-sadisplay',
-    version='0.3.2',
-    url='http://bitbucket.org/birkenfeld/sphinx-contrib',
+    version='0.3.3',
+    url='https://github.com/sphinx-contrib/sadisplay',
     download_url='http://pypi.python.org/pypi/sphinxcontrib-sadisplay',
     license='BSD',
     author='Evgeniy Tatarkin',
@@ -39,11 +37,8 @@ setup(
         'Topic :: Utilities',
     ],
     platforms='any',
-    #packages=['sphinxcontib',],
+    # packages=['sphinxcontib',],
     packages=find_packages(),
     include_package_data=True,
     install_requires=requires,
-    tests_require=['nose >= 1.0',],
-    test_suite = 'nose.collector',
-    namespace_packages=['sphinxcontrib'],
-)
+    namespace_packages=['sphinxcontrib'], )

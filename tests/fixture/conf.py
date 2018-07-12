@@ -8,12 +8,13 @@ import sys
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('app'))
 
-
 # If your documentation needs a minimal Sphinx version, state it here.
 #needs_sphinx = '1.0'
 
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinxcontrib.sadisp', ]
+extensions = [
+    'sphinxcontrib.sadisp',
+]
 
 plantuml = 'java -jar plantuml.jar'.split()
 graphviz = 'dot -Tpng'.split()
@@ -76,7 +77,6 @@ pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
-
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -155,7 +155,6 @@ html_static_path = ['_static']
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'sadisplay_fixturedoc'
 
-
 # The paper size ('letter' or 'a4').
 #latex_paper_size = 'letter'
 
@@ -163,8 +162,8 @@ htmlhelp_basename = 'sadisplay_fixturedoc'
 #latex_font_size = '10pt'
 
 latex_documents = [
-  ('index', 'sadisplay_fixture.tex', 'sadisplay\\_fixture Documentation',
-   'Evgeniy Tatarkin', 'manual'),
+    ('index', 'sadisplay_fixture.tex', 'sadisplay\\_fixture Documentation',
+     'Evgeniy Tatarkin', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -192,7 +191,5 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', 'sadisplay_fixture', 'sadisplay_fixture Documentation',
-     ['Evgeniy Tatarkin'], 1)
-]
+man_pages = [('index', 'sadisplay_fixture', 'sadisplay_fixture Documentation',
+              ['Evgeniy Tatarkin'], 1)]
