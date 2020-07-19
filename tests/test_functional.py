@@ -97,8 +97,8 @@ def test_buildlatex_simple(_outdir):
     """
     files = glob.glob(os.path.join(_outdir, 'sadisplay-*.png'))
     assert len(files) == 1
-    assert '\includegraphics{sadisplay-' in readfile(_outdir,
-                                                     'sadisplay_fixture.tex')
+    assert '\includegraphics{sadisplay' in readfile(_outdir,
+                                                    'sadisplay_fixture.tex')
 
     content = readfile(_outdir, files[0])
     assert 'Admin' not in content

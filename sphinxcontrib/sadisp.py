@@ -21,6 +21,13 @@ import sadisplay
 log = logging.getLogger(__name__)
 
 
+def warn(self, message):
+    method = getattr(self.builder, 'warn', None)
+    method = method or getattr(self, 'warn', None)
+    method = method or log.warning
+    method(message)
+
+
 class RendererError(SphinxError):
     pass
 
@@ -75,8 +82,8 @@ def generate_name(self, content):
     fname = 'sadisplay-%s.png' % key
     imgpath = getattr(self.builder, 'imgpath', None)
     if imgpath:
-        return ('/'.join((self.builder.imgpath, fname)), os.path.join(
-            self.builder.outdir, '_images', fname))
+        return ('/'.join((self.builder.imgpath, fname)),
+                os.path.join(self.builder.outdir, '_images', fname))
     else:
         return fname, os.path.join(self.builder.outdir, fname)
 
@@ -181,10 +188,11 @@ def render(self, node):
 
 def html_visit(self, node):
     try:
+        warn(self, 'visit html')
         refname = render(self, node)
     except Exception as err:
         log.exception(err)
-        self.builder.warn('sadisplay render error: %s' % err)
+        warn(self, 'sadisplay render error: %s' % err)
         raise nodes.SkipNode
     self.body.append(self.starttag(node, 'p', CLASS='sadisplay'))
 
@@ -204,7 +212,7 @@ def latex_visit(self, node):
     try:
         refname = render(self, node)
     except Exception as err:
-        self.builder.warn('sadisplay render error: %s' % err)
+        warn(self, 'sadisplay render error: %s' % err)
         raise nodes.SkipNode
     self.body.append('\\includegraphics{%s}' % self.encode(refname))
     raise nodes.SkipNode
@@ -224,9 +232,12 @@ def setup(app):
 
     app.add_config_value('sadisplay_default_render', 'graphviz', False)
 
-    if not getattr(setup, '_sanode_registered', False):
+    if not getattr(app, '_sanode_registered', False):
         app.add_node(
-            SaNode, html=(html_visit, None), latex=(latex_visit, None))
-        setattr(setup, '_sanode_registered', True)
+            SaNode,
+            html=(html_visit, None),
+            latex=(latex_visit, None),
+        )
+        setattr(app, '_sanode_registered', True)
 
     app.add_directive('sadisplay', SadisplayDirective)
