@@ -188,7 +188,6 @@ def render(self, node):
 
 def html_visit(self, node):
     try:
-        warn(self, 'visit html')
         refname = render(self, node)
     except Exception as err:
         log.exception(err)
