@@ -15,7 +15,7 @@ requires = [
 
 setup(
     name='sphinxcontrib-sadisplay',
-    version='0.3.3',
+    version='0.3.4',
     url='https://github.com/sphinx-contrib/sadisplay',
     download_url='http://pypi.python.org/pypi/sphinxcontrib-sadisplay',
     license='BSD',
