@@ -3,6 +3,7 @@ import os
 import sys
 import logging
 import subprocess
+from errno import ENOENT
 
 try:
     from hashlib import sha1
@@ -14,7 +15,7 @@ from docutils.parsers.rst import directives
 from docutils import nodes
 
 from sphinx.errors import SphinxWarning, SphinxError, ExtensionError
-from sphinx.util.osutil import ensuredir, ENOENT
+from sphinx.util.osutil import ensuredir
 
 import sadisplay
 
